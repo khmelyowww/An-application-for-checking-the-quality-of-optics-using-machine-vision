@@ -372,7 +372,7 @@ namespace WindowsFormsApp5
         private void changePixelSize()
         {
             string pixelSize_temp = textBox_pixelSize.Text;
-            Double.TryParse(pixelSize_temp, out pixelSize);
+            Double.TryParse(pixelSize_temp, out pixelSize); //возвращает true or false
         }
 
         private void textBox_pixelSize_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
