@@ -38,7 +38,7 @@ namespace WindowsFormsApp5
             this.label3 = new System.Windows.Forms.Label();
             this.textBox_pixelSize = new System.Windows.Forms.TextBox();
             this.textBox_sizeOsnDel = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBox_valueView = new System.Windows.Forms.ComboBox();
             this.panelPB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
@@ -133,23 +133,23 @@ namespace WindowsFormsApp5
             this.textBox_sizeOsnDel.Text = "15";
             this.textBox_sizeOsnDel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.textBox_sizeOsnDel_PreviewKeyDown);
             // 
-            // comboBox1
+            // comboBox_valueView
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comboBox_valueView.FormattingEnabled = true;
+            this.comboBox_valueView.Items.AddRange(new object[] {
             "См",
             "Мм"});
-            this.comboBox1.Location = new System.Drawing.Point(100, 141);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(74, 21);
-            this.comboBox1.TabIndex = 11;
+            this.comboBox_valueView.Location = new System.Drawing.Point(100, 141);
+            this.comboBox_valueView.Name = "comboBox_valueView";
+            this.comboBox_valueView.Size = new System.Drawing.Size(74, 21);
+            this.comboBox_valueView.TabIndex = 11;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1033, 644);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.comboBox_valueView);
             this.Controls.Add(this.textBox_sizeOsnDel);
             this.Controls.Add(this.textBox_pixelSize);
             this.Controls.Add(this.label3);
@@ -178,7 +178,7 @@ namespace WindowsFormsApp5
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox_pixelSize;
         private System.Windows.Forms.TextBox textBox_sizeOsnDel;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBox_valueView;
     }
 }
 

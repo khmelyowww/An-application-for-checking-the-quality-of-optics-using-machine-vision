@@ -78,11 +78,6 @@ namespace WindowsFormsApp5
             pictureBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(pictureBox_MouseWheel);
         }
 
-        private void pictureBox_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void buttonStart_Click(object sender, EventArgs e)
         {
             if(button1.Text.Equals("Запустить камеру"))
@@ -203,11 +198,6 @@ namespace WindowsFormsApp5
             pictureBox.Image = image;
             if (saveimg != null) saveimg.Dispose();
             frameCopy.Dispose();
-        }
-
-        private void pictureBox_Click_1(object sender, EventArgs e)
-        {
-
         }
 
         private void PrepairPB()
@@ -344,11 +334,6 @@ namespace WindowsFormsApp5
             pictureBox.Top = pt;
         }
 
-        private void btnPaint_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void pictureBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.Shift)
@@ -372,7 +357,8 @@ namespace WindowsFormsApp5
         private void changePixelSize()
         {
             string pixelSize_temp = textBox_pixelSize.Text;
-            Double.TryParse(pixelSize_temp, out pixelSize); //возвращает true or false
+            if (Double.TryParse(pixelSize_temp, out pixelSize)) textBox_pixelSize.BackColor = Color.White;
+            else textBox_pixelSize.BackColor = Color.Red;
         }
 
         private void textBox_pixelSize_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
