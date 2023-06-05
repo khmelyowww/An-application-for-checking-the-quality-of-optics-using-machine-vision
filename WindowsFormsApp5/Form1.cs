@@ -41,6 +41,7 @@ namespace WindowsFormsApp5
         double block = 10;
         int textScale = 2;
         int sizeOsnDel;
+        double interval;
 
         private void CaptureCamera()
         {
@@ -76,6 +77,9 @@ namespace WindowsFormsApp5
         private void Form1_Load(object sender, EventArgs e)
         {
             pictureBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(pictureBox_MouseWheel);
+            comboBox_valueView.SelectedIndex = 0;
+            comboBox_theme.SelectedIndex = 0;
+            buttonSFD.Enabled = false;
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -85,11 +89,13 @@ namespace WindowsFormsApp5
                 CaptureCamera();
                 button1.Text = "Остановить камеру";
                 isCameraRunning = true;
+                buttonSFD.Enabled = true;
             }
             else
             {
                 button1.Text = "Запустить камеру";
                 isCameraRunning = false;
+                buttonSFD.Enabled = false;
             }
         }
 
@@ -102,6 +108,7 @@ namespace WindowsFormsApp5
                     frame = new Mat(ofd.FileName);
                     PrepairPB();
                     Threating();
+                    buttonSFD.Enabled = true;
                 }
             }
         }
@@ -115,14 +122,45 @@ namespace WindowsFormsApp5
 
             int i = 1;
             bool drawFlag = false;
-            double interval;
 
             while (true)
             {
-                interval = ((block / pixelSize) / 10) * i;
+                //if (comboBox_valueView.SelectedItem.ToString() == "См") //проблема с потоком
+                //{
+                //    interval = ((block / pixelSize) / 10) * i;
+                //}
+
+                //else
+                //{
+                //    interval = ((block / pixelSize) / 10) / 10 * i;
+                //}
+
+
+                //if (comboBox_valueView.SelectedIndex == 0)    //проблема с потоком
+                //{
+                //    interval = ((block / pixelSize) / 10) * i;
+                //}
+
+                //else
+                //{
+                //    interval = ((block / pixelSize) / 10) / 10 * i;
+                //}
+
+                this.Invoke((MethodInvoker)delegate
+                {
+                    if (comboBox_valueView.SelectedIndex == 0)
+                    {
+                        interval = ((block / pixelSize) / 10) * i;
+                    }
+
+                    else
+                    {
+                        interval = ((block / pixelSize) / 10) / 10 * i;
+                    }
+                });
 
                 OpenCvSharp.Size textSize = Cv2.GetTextSize($"{i / 10}", HersheyFonts.HersheyPlain, textScale, 1, out int baseline);
-
+                
                 if ((rullerX + interval) <= frame.Width)
                 {
                     drawFlag = true;
@@ -364,6 +402,59 @@ namespace WindowsFormsApp5
         private void textBox_pixelSize_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) changePixelSize();
+        }
+
+        private void comboBox_theme_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_theme.SelectedIndex == 0)
+            {
+                this.BackColor = Color.LightGray;
+                panelPB.BackColor = Color.LightGray;
+                label1.ForeColor = Color.Black;
+                label2.ForeColor = Color.Black;
+                label3.ForeColor = Color.Black;
+                label4.ForeColor = Color.Black;
+            }
+
+            else
+            {
+                this.BackColor = Color.FromArgb(9, 10, 20);
+                panelPB.BackColor = Color.DimGray;
+                label1.ForeColor = Color.LightGray;
+                label2.ForeColor = Color.LightGray;
+                label3.ForeColor = Color.LightGray;
+                label4.ForeColor = Color.LightGray;
+            }
+        }
+
+        private void buttonSFD_Click(object sender, EventArgs e)
+        {
+            if (frame != null)  //или pictureBox.Image
+            {
+                SaveFileDialog savedialog = new SaveFileDialog();
+                savedialog.Title = "Сохранить картинку как...";
+                savedialog.OverwritePrompt = true;
+                savedialog.CheckPathExists = true;
+                savedialog.Filter = "Image Files(*.BMP)|*.BMP|Image Files(*.JPG)|*.JPG|Image Files(*.GIF)|*.GIF|Image Files(*.PNG)|*.PNG|All files (*.*)|*.*";
+                if (savedialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        image.Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+                    }
+                    catch
+                    {
+                        System.Windows.Forms.MessageBox.Show("Невозможно сохранить изображение", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void buttonSFD_MouseHover(object sender, EventArgs e)
+        {
+            //ToolTip tooltip = new ToolTip();
+            //tooltip.ShowAlways = true;    //не помогает отображать подсказку на неактивном элементе
+            //tooltip.SetToolTip(buttonSFD, "Невозможно сохранить пустое изображение");
         }
     }
 }
