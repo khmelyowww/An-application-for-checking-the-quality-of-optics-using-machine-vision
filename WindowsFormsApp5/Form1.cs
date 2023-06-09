@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Forms;
@@ -40,8 +41,9 @@ namespace WindowsFormsApp5
         double pixelSize = 0.0088;
         double block = 10;
         int textScale = 2;
-        int sizeOsnDel;
-        double interval;
+        int sizeOsnDel = 15;
+        int valueView = 1;
+        
 
         private void CaptureCamera()
         {
@@ -80,6 +82,8 @@ namespace WindowsFormsApp5
             comboBox_valueView.SelectedIndex = 0;
             comboBox_theme.SelectedIndex = 0;
             buttonSFD.Enabled = false;
+            buttonDetector.Enabled = false;
+            comboBox_valueView.SelectedIndex = valueView;
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -109,6 +113,7 @@ namespace WindowsFormsApp5
                     PrepairPB();
                     Threating();
                     buttonSFD.Enabled = true;
+                    buttonDetector.Enabled = true;
                 }
             }
         }
@@ -122,6 +127,7 @@ namespace WindowsFormsApp5
 
             int i = 1;
             bool drawFlag = false;
+            double interval;
 
             while (true)
             {
@@ -146,21 +152,28 @@ namespace WindowsFormsApp5
                 //    interval = ((block / pixelSize) / 10) / 10 * i;
                 //}
 
-                this.Invoke((MethodInvoker)delegate
-                {
-                    if (comboBox_valueView.SelectedIndex == 0)
-                    {
-                        interval = ((block / pixelSize) / 10) * i;
-                    }
+                //this.Invoke((MethodInvoker)delegate
+                //{
+                //    if (comboBox_valueView.SelectedIndex == 0)
+                //    {
+                //        interval = ((block / pixelSize) / 10) * i;
+                //    }
 
-                    else
-                    {
-                        interval = ((block / pixelSize) / 10) / 10 * i;
-                    }
-                });
+                //    else
+                //    {
+                //        interval = ((block / pixelSize) / 10) / 10 * i;
+                //    }
+                //});
 
-                OpenCvSharp.Size textSize = Cv2.GetTextSize($"{i / 10}", HersheyFonts.HersheyPlain, textScale, 1, out int baseline);
+                interval = ((block / pixelSize) / 10) * i;
+
+
+                string text;
+                if (valueView == 0) text = $"{block * i / 10}";
+                else text = $"{block * i / 10 / 10}";
+                OpenCvSharp.Size textSize = Cv2.GetTextSize(text, HersheyFonts.HersheyPlain, textScale, 1, out int baseline);
                 
+
                 if ((rullerX + interval) <= frame.Width)
                 {
                     drawFlag = true;
@@ -168,7 +181,7 @@ namespace WindowsFormsApp5
                     if (i % 10 == 0)
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + interval, rullerY + sizeOsnDel), new OpenCvSharp.Point(rullerX + interval, rullerY - sizeOsnDel), Scalar.Red, 1, LineTypes.AntiAlias);
-                        Cv2.PutText(frameCopy, $"{i / 10}", new OpenCvSharp.Point((rullerX + interval) - (textSize.Width / 2), rullerY - (sizeOsnDel + 5)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
+                        Cv2.PutText(frameCopy, text, new OpenCvSharp.Point((rullerX + interval) - (textSize.Width / 2), rullerY - (sizeOsnDel + 5)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
 
                     else
@@ -184,7 +197,7 @@ namespace WindowsFormsApp5
                     if (i % 10 == 0)
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + sizeOsnDel, rullerY + interval), new OpenCvSharp.Point(rullerX - sizeOsnDel, rullerY + interval), Scalar.Red, 1, LineTypes.AntiAlias);
-                        Cv2.PutText(frameCopy, $"{i / 10}", new OpenCvSharp.Point(rullerX + (sizeOsnDel + 5), (rullerY + interval) + (textSize.Height / 2)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
+                        Cv2.PutText(frameCopy, text, new OpenCvSharp.Point(rullerX + (sizeOsnDel + 5), (rullerY + interval) + (textSize.Height / 2)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
 
                     else
@@ -200,7 +213,7 @@ namespace WindowsFormsApp5
                     if (i % 10 == 0)
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX - interval, rullerY + sizeOsnDel), new OpenCvSharp.Point(rullerX - interval, rullerY - sizeOsnDel), Scalar.Red, 1, LineTypes.AntiAlias);
-                        Cv2.PutText(frameCopy, $"{i / 10}", new OpenCvSharp.Point((rullerX - interval) - (textSize.Width / 2), rullerY + (sizeOsnDel + 5) + textSize.Height), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
+                        Cv2.PutText(frameCopy, text, new OpenCvSharp.Point((rullerX - interval) - (textSize.Width / 2), rullerY + (sizeOsnDel + 5) + textSize.Height), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
 
                     else
@@ -216,7 +229,7 @@ namespace WindowsFormsApp5
                     if (i % 10 == 0)
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + sizeOsnDel, rullerY - interval), new OpenCvSharp.Point(rullerX - sizeOsnDel, rullerY - interval), Scalar.Red, 1, LineTypes.AntiAlias);
-                        Cv2.PutText(frameCopy, $"{i / 10}", new OpenCvSharp.Point(rullerX - (sizeOsnDel + 5) - textSize.Width, (rullerY - interval) + (textSize.Height / 2)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
+                        Cv2.PutText(frameCopy, text, new OpenCvSharp.Point(rullerX - (sizeOsnDel + 5) - textSize.Width, (rullerY - interval) + (textSize.Height / 2)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
 
                     else
@@ -384,12 +397,12 @@ namespace WindowsFormsApp5
         private void resizeOsnDel()
         {
             if (string.IsNullOrEmpty(textBox_sizeOsnDel.Text)) textBox_sizeOsnDel.Text = "0";
-            else sizeOsnDel = Convert.ToInt32(textBox_sizeOsnDel.Text);
+            else block = Convert.ToDouble(textBox_sizeOsnDel.Text);
         }
 
         private void textBox_sizeOsnDel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter) resizeOsnDel();
+            if(e.KeyCode == Keys.Enter) resizeOsnDel(); Threating();
         }
 
         private void changePixelSize()
@@ -429,13 +442,14 @@ namespace WindowsFormsApp5
 
         private void buttonSFD_Click(object sender, EventArgs e)
         {
-            if (frame != null)  //или pictureBox.Image
+            if (image != null)
             {
                 SaveFileDialog savedialog = new SaveFileDialog();
                 savedialog.Title = "Сохранить картинку как...";
                 savedialog.OverwritePrompt = true;
                 savedialog.CheckPathExists = true;
                 savedialog.Filter = "Image Files(*.BMP)|*.BMP|Image Files(*.JPG)|*.JPG|Image Files(*.GIF)|*.GIF|Image Files(*.PNG)|*.PNG|All files (*.*)|*.*";
+                savedialog.FileName = "Безымянный";
                 if (savedialog.ShowDialog() == DialogResult.OK)
                 {
                     try
@@ -450,11 +464,52 @@ namespace WindowsFormsApp5
             }
         }
 
-        private void buttonSFD_MouseHover(object sender, EventArgs e)
+        private void comboBox_valueView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //ToolTip tooltip = new ToolTip();
-            //tooltip.ShowAlways = true;    //не помогает отображать подсказку на неактивном элементе
-            //tooltip.SetToolTip(buttonSFD, "Невозможно сохранить пустое изображение");
+            valueView = comboBox_valueView.SelectedIndex;
+            //Threating();
+        }
+
+        private void buttonDetector_Click(object sender, EventArgs e)
+        {
+            using (Mat src = frame)
+            using (Mat gray = new Mat())
+            using (Mat binary = new Mat())
+            {
+                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY); //перевод в серый
+
+                //Cv2.Threshold(gray, binary, 127, 255, ThresholdTypes.Binary);
+                Cv2.AdaptiveThreshold(src, binary, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 11, 2);    //бинаризация
+
+                OpenCvSharp.Point[][] contours; //поиск контуров
+                HierarchyIndex[] hierarchyIndexes;
+                Cv2.FindContours(binary, out contours, out hierarchyIndexes, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                double minArea = 5;
+                double maxArea = 250000;
+
+                List<OpenCvSharp.Rect> blackSpots = new List<OpenCvSharp.Rect>();
+
+                for (int i = 0; i < contours.Length; i++)    //отрисовка контуров на изображении
+                {
+                    double area = Cv2.ContourArea(contours[i]);
+
+                    if (area > minArea && area < maxArea)
+                    {
+                        Scalar color = Cv2.Mean(src, contours[i]);
+                        if (color.Val0 > 200 && color.Val1 < 10 && color.Val2 < 10)
+                        {
+                            OpenCvSharp.Rect rect = Cv2.BoundingRect(contours[i]);
+                            blackSpots.Add(rect);
+                        }
+                    }
+                }
+
+                foreach (OpenCvSharp.Rect spot in blackSpots)
+                {
+                    Cv2.Rectangle(src, spot, Scalar.Red, 2);
+                }
+            }
         }
     }
 }

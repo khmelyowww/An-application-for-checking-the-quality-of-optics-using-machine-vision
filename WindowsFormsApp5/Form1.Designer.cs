@@ -43,6 +43,7 @@ namespace WindowsFormsApp5
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox_theme = new System.Windows.Forms.ComboBox();
             this.buttonSFD = new System.Windows.Forms.Button();
+            this.buttonDetector = new System.Windows.Forms.Button();
             this.panelPB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
@@ -102,7 +103,7 @@ namespace WindowsFormsApp5
             this.label1.ForeColor = System.Drawing.Color.Black;
             this.label1.Location = new System.Drawing.Point(12, 398);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 16);
+            this.label1.Size = new System.Drawing.Size(116, 16);
             this.label1.TabIndex = 5;
             this.label1.Text = "Размер пикселя:";
             // 
@@ -114,7 +115,7 @@ namespace WindowsFormsApp5
             this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(12, 463);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(149, 16);
+            this.label2.Size = new System.Drawing.Size(148, 16);
             this.label2.TabIndex = 6;
             this.label2.Text = "Размер осн. делений:";
             // 
@@ -126,7 +127,7 @@ namespace WindowsFormsApp5
             this.label3.ForeColor = System.Drawing.Color.Black;
             this.label3.Location = new System.Drawing.Point(12, 529);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(123, 16);
+            this.label3.Size = new System.Drawing.Size(122, 16);
             this.label3.TabIndex = 7;
             this.label3.Text = "Ед. отображения:";
             // 
@@ -157,12 +158,13 @@ namespace WindowsFormsApp5
             this.comboBox_valueView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.comboBox_valueView.FormattingEnabled = true;
             this.comboBox_valueView.Items.AddRange(new object[] {
-            "См",
-            "Мм"});
+            "Мм",
+            "См"});
             this.comboBox_valueView.Location = new System.Drawing.Point(12, 548);
             this.comboBox_valueView.Name = "comboBox_valueView";
             this.comboBox_valueView.Size = new System.Drawing.Size(160, 21);
             this.comboBox_valueView.TabIndex = 11;
+            this.comboBox_valueView.SelectedIndexChanged += new System.EventHandler(this.comboBox_valueView_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -172,7 +174,7 @@ namespace WindowsFormsApp5
             this.label4.ForeColor = System.Drawing.Color.Black;
             this.label4.Location = new System.Drawing.Point(12, 591);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(102, 16);
+            this.label4.Size = new System.Drawing.Size(101, 16);
             this.label4.TabIndex = 12;
             this.label4.Text = "Сменить тему:";
             // 
@@ -198,7 +200,16 @@ namespace WindowsFormsApp5
             this.buttonSFD.Text = "Сохранить изображение";
             this.buttonSFD.UseVisualStyleBackColor = true;
             this.buttonSFD.Click += new System.EventHandler(this.buttonSFD_Click);
-            this.buttonSFD.MouseHover += new System.EventHandler(this.buttonSFD_MouseHover);
+            // 
+            // buttonDetector
+            // 
+            this.buttonDetector.Location = new System.Drawing.Point(4, 98);
+            this.buttonDetector.Name = "buttonDetector";
+            this.buttonDetector.Size = new System.Drawing.Size(168, 25);
+            this.buttonDetector.TabIndex = 15;
+            this.buttonDetector.Text = "Обнаружение дефектов";
+            this.buttonDetector.UseVisualStyleBackColor = true;
+            this.buttonDetector.Click += new System.EventHandler(this.buttonDetector_Click);
             // 
             // Form1
             // 
@@ -206,6 +217,7 @@ namespace WindowsFormsApp5
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1036, 644);
+            this.Controls.Add(this.buttonDetector);
             this.Controls.Add(this.buttonSFD);
             this.Controls.Add(this.comboBox_theme);
             this.Controls.Add(this.label4);
@@ -243,6 +255,7 @@ namespace WindowsFormsApp5
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox_theme;
         private System.Windows.Forms.Button buttonSFD;
+        private System.Windows.Forms.Button buttonDetector;
     }
 }
 
