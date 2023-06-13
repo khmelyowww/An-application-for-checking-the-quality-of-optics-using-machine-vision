@@ -25,6 +25,7 @@ namespace WindowsFormsApp5
     {
         VideoCapture capture;
         Mat frame;
+        Mat frameUpdated;
         Bitmap image;
         private Thread camera;
         bool isCameraRunning = false;
@@ -54,6 +55,7 @@ namespace WindowsFormsApp5
             if (capture.IsOpened())
             {
                 capture.Read(frame);
+                frameUpdated = frame.Clone();
                 PrepairPB();
                 Threating();
             }
@@ -82,7 +84,6 @@ namespace WindowsFormsApp5
             comboBox_valueView.SelectedIndex = 0;
             comboBox_theme.SelectedIndex = 0;
             buttonSFD.Enabled = false;
-            buttonDetector.Enabled = false;
             comboBox_valueView.SelectedIndex = valueView;
         }
 
@@ -110,17 +111,17 @@ namespace WindowsFormsApp5
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     frame = new Mat(ofd.FileName);
+                    frameUpdated = frame.Clone();
                     PrepairPB();
                     Threating();
                     buttonSFD.Enabled = true;
-                    buttonDetector.Enabled = true;
                 }
             }
         }
 
         private void Threating()
         {
-            Mat frameCopy = frame.Clone();
+            Mat frameCopy = frameUpdated.Clone();
 
             Cv2.Line(frameCopy, new OpenCvSharp.Point(0, rullerY), new OpenCvSharp.Point(frame.Width, rullerY), Scalar.Red, 1, LineTypes.AntiAlias);
             Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX, 0), new OpenCvSharp.Point(rullerX, frame.Height), Scalar.Red, 1, LineTypes.AntiAlias);
@@ -131,39 +132,7 @@ namespace WindowsFormsApp5
 
             while (true)
             {
-                //if (comboBox_valueView.SelectedItem.ToString() == "См") //проблема с потоком
-                //{
-                //    interval = ((block / pixelSize) / 10) * i;
-                //}
-
-                //else
-                //{
-                //    interval = ((block / pixelSize) / 10) / 10 * i;
-                //}
-
-
-                //if (comboBox_valueView.SelectedIndex == 0)    //проблема с потоком
-                //{
-                //    interval = ((block / pixelSize) / 10) * i;
-                //}
-
-                //else
-                //{
-                //    interval = ((block / pixelSize) / 10) / 10 * i;
-                //}
-
-                //this.Invoke((MethodInvoker)delegate
-                //{
-                //    if (comboBox_valueView.SelectedIndex == 0)
-                //    {
-                //        interval = ((block / pixelSize) / 10) * i;
-                //    }
-
-                //    else
-                //    {
-                //        interval = ((block / pixelSize) / 10) / 10 * i;
-                //    }
-                //});
+                
 
                 interval = ((block / pixelSize) / 10) * i;
 
@@ -470,25 +439,22 @@ namespace WindowsFormsApp5
             //Threating();
         }
 
-        private void buttonDetector_Click(object sender, EventArgs e)
+        private void blockDetected()
         {
-            using (Mat src = frame)
+            frameUpdated = frame.Clone();
             using (Mat gray = new Mat())
             using (Mat binary = new Mat())
             {
-                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY); //перевод в серый
+                Cv2.CvtColor(frameUpdated, gray, ColorConversionCodes.BGR2GRAY); //перевод в серый
+                Cv2.AdaptiveThreshold(gray, binary, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 81, 10);    //бинаризация
 
-                //Cv2.Threshold(gray, binary, 127, 255, ThresholdTypes.Binary);
-                Cv2.AdaptiveThreshold(src, binary, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 11, 2);    //бинаризация
 
                 OpenCvSharp.Point[][] contours; //поиск контуров
                 HierarchyIndex[] hierarchyIndexes;
-                Cv2.FindContours(binary, out contours, out hierarchyIndexes, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+                Cv2.FindContours(binary, out contours, out hierarchyIndexes, RetrievalModes.Tree, ContourApproximationModes.ApproxSimple);
 
-                double minArea = 5;
+                double minArea = 15;
                 double maxArea = 250000;
-
-                List<OpenCvSharp.Rect> blackSpots = new List<OpenCvSharp.Rect>();
 
                 for (int i = 0; i < contours.Length; i++)    //отрисовка контуров на изображении
                 {
@@ -496,19 +462,12 @@ namespace WindowsFormsApp5
 
                     if (area > minArea && area < maxArea)
                     {
-                        Scalar color = Cv2.Mean(src, contours[i]);
-                        if (color.Val0 > 200 && color.Val1 < 10 && color.Val2 < 10)
-                        {
-                            OpenCvSharp.Rect rect = Cv2.BoundingRect(contours[i]);
-                            blackSpots.Add(rect);
-                        }
+                        OpenCvSharp.Rect rect = Cv2.BoundingRect(contours[i]);
+                        Cv2.Rectangle(frameUpdated, rect, Scalar.Red, 2);
                     }
                 }
 
-                foreach (OpenCvSharp.Rect spot in blackSpots)
-                {
-                    Cv2.Rectangle(src, spot, Scalar.Red, 2);
-                }
+                Threating();
             }
         }
     }

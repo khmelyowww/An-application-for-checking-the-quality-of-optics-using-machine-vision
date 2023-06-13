@@ -43,7 +43,7 @@ namespace WindowsFormsApp5
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox_theme = new System.Windows.Forms.ComboBox();
             this.buttonSFD = new System.Windows.Forms.Button();
-            this.buttonDetector = new System.Windows.Forms.Button();
+            this.checkBox_blockDetected = new System.Windows.Forms.CheckBox();
             this.panelPB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
@@ -201,15 +201,15 @@ namespace WindowsFormsApp5
             this.buttonSFD.UseVisualStyleBackColor = true;
             this.buttonSFD.Click += new System.EventHandler(this.buttonSFD_Click);
             // 
-            // buttonDetector
+            // checkBox_blockDetected
             // 
-            this.buttonDetector.Location = new System.Drawing.Point(4, 98);
-            this.buttonDetector.Name = "buttonDetector";
-            this.buttonDetector.Size = new System.Drawing.Size(168, 25);
-            this.buttonDetector.TabIndex = 15;
-            this.buttonDetector.Text = "Обнаружение дефектов";
-            this.buttonDetector.UseVisualStyleBackColor = true;
-            this.buttonDetector.Click += new System.EventHandler(this.buttonDetector_Click);
+            this.checkBox_blockDetected.AutoSize = true;
+            this.checkBox_blockDetected.Location = new System.Drawing.Point(4, 98);
+            this.checkBox_blockDetected.Name = "checkBox_blockDetected";
+            this.checkBox_blockDetected.Size = new System.Drawing.Size(147, 17);
+            this.checkBox_blockDetected.TabIndex = 15;
+            this.checkBox_blockDetected.Text = "Обнаружение дефектов";
+            this.checkBox_blockDetected.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -217,7 +217,7 @@ namespace WindowsFormsApp5
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1036, 644);
-            this.Controls.Add(this.buttonDetector);
+            this.Controls.Add(this.checkBox_blockDetected);
             this.Controls.Add(this.buttonSFD);
             this.Controls.Add(this.comboBox_theme);
             this.Controls.Add(this.label4);
@@ -255,7 +255,7 @@ namespace WindowsFormsApp5
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox_theme;
         private System.Windows.Forms.Button buttonSFD;
-        private System.Windows.Forms.Button buttonDetector;
+        private System.Windows.Forms.CheckBox checkBox_blockDetected;
     }
 }
 
