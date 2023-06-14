@@ -132,17 +132,13 @@ namespace WindowsFormsApp5
 
             while (true)
             {
-                
-
                 interval = ((block / pixelSize) / 10) * i;
-
 
                 string text;
                 if (valueView == 0) text = $"{block * i / 10}";
                 else text = $"{block * i / 10 / 10}";
                 OpenCvSharp.Size textSize = Cv2.GetTextSize(text, HersheyFonts.HersheyPlain, textScale, 1, out int baseline);
                 
-
                 if ((rullerX + interval) <= frame.Width)
                 {
                     drawFlag = true;
@@ -207,15 +203,22 @@ namespace WindowsFormsApp5
                     }
                 }
 
+                if (isCameraRunning == true)
+                {
+                    if (checkBox_blockDetected.Checked == true) blockDetected();
+                }
+
                 if (drawFlag == false) break;
 
                 i++;
                 drawFlag = false;
             }
 
+            if (isCameraRunning == false && checkBox_blockDetected.Checked == true) blockDetected();
+
             image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(frameCopy);
             var saveimg = pictureBox.Image;
-            pictureBox.Image = image;
+            pictureBox.Image = image;   //в данный момент объект используется другим процессом (при перемещении линейки на включенной камере)
             if (saveimg != null) saveimg.Dispose();
             frameCopy.Dispose();
         }
@@ -441,7 +444,7 @@ namespace WindowsFormsApp5
 
         private void blockDetected()
         {
-            frameUpdated = frame.Clone();
+            frameUpdated = frame.Clone(); //failed to allocate 921600 bytes
             using (Mat gray = new Mat())
             using (Mat binary = new Mat())
             {
@@ -469,6 +472,19 @@ namespace WindowsFormsApp5
 
                 Threating();
             }
+        }
+
+        private void checkBox_blockDetected_CheckedChanged(object sender, EventArgs e)
+        {
+            //if(isCameraRunning == false && checkBox_blockDetected.Checked == true) blockDetected();
+            //if(isCameraRunning == true && checkBox_blockDetected.Checked == true)
+            //{
+            //    while (true)
+            //    {
+            //        blockDetected();
+            //    }
+            //}
+            //else frameUpdated = frame.Clone();
         }
     }
 }

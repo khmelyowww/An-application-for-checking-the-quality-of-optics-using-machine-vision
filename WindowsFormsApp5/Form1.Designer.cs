@@ -210,6 +210,7 @@ namespace WindowsFormsApp5
             this.checkBox_blockDetected.TabIndex = 15;
             this.checkBox_blockDetected.Text = "Обнаружение дефектов";
             this.checkBox_blockDetected.UseVisualStyleBackColor = true;
+            this.checkBox_blockDetected.CheckedChanged += new System.EventHandler(this.checkBox_blockDetected_CheckedChanged);
             // 
             // Form1
             // 
