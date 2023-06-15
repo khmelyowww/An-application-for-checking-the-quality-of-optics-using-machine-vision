@@ -45,7 +45,6 @@ namespace WindowsFormsApp5
         int sizeOsnDel = 15;
         int valueView = 1;
         
-
         private void CaptureCamera()
         {
             frame = new Mat();
@@ -55,9 +54,13 @@ namespace WindowsFormsApp5
             if (capture.IsOpened())
             {
                 capture.Read(frame);
-                frameUpdated = frame.Clone();
                 PrepairPB();
-                Threating();
+                if (checkBox_blockDetected.Checked) blockDetected();
+                else
+                {
+                    frameUpdated = frame.Clone();
+                    Threating();
+                }
             }
             camera = new Thread(new ThreadStart(CaptureCameraCallback));
             camera.Start();
@@ -68,7 +71,12 @@ namespace WindowsFormsApp5
                 while (isCameraRunning)
                 {
                     capture.Read(frame);
-                    Threating();
+                    if (checkBox_blockDetected.Checked) blockDetected();
+                    else
+                    {
+                        frameUpdated = frame.Clone();
+                        Threating();
+                    }  
                 }
             capture.Release();
         }
@@ -81,10 +89,13 @@ namespace WindowsFormsApp5
         private void Form1_Load(object sender, EventArgs e)
         {
             pictureBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(pictureBox_MouseWheel);
-            comboBox_valueView.SelectedIndex = 0;
+
             comboBox_theme.SelectedIndex = 0;
+
             buttonSFD.Enabled = false;
-            comboBox_valueView.SelectedIndex = valueView;
+            textBox_pixelSize.Enabled = false;
+            textBox_sizeOsnDel.Enabled = false;
+            comboBox_valueView.Enabled = false;
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -95,12 +106,20 @@ namespace WindowsFormsApp5
                 button1.Text = "Остановить камеру";
                 isCameraRunning = true;
                 buttonSFD.Enabled = true;
+                textBox_pixelSize.Enabled = true;
+                textBox_sizeOsnDel.Enabled = true;
+                comboBox_valueView.Enabled = true;
+                comboBox_valueView.SelectedIndex = 0;
+                comboBox_valueView.SelectedIndex = valueView;
             }
             else
             {
                 button1.Text = "Запустить камеру";
                 isCameraRunning = false;
                 buttonSFD.Enabled = false;
+                textBox_pixelSize.Enabled = false;
+                textBox_sizeOsnDel.Enabled = false;
+                comboBox_valueView.Enabled = false;
             }
         }
 
@@ -111,10 +130,19 @@ namespace WindowsFormsApp5
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     frame = new Mat(ofd.FileName);
-                    frameUpdated = frame.Clone();
                     PrepairPB();
-                    Threating();
+                    if (checkBox_blockDetected.Checked) blockDetected();
+                    else
+                    {
+                        frameUpdated = frame.Clone();
+                        Threating();
+                    }
                     buttonSFD.Enabled = true;
+                    textBox_pixelSize.Enabled = true;
+                    textBox_sizeOsnDel.Enabled = true;
+                    comboBox_valueView.Enabled = true;
+                    comboBox_valueView.SelectedIndex = 0;
+                    comboBox_valueView.SelectedIndex = valueView;
                 }
             }
         }
@@ -148,7 +176,6 @@ namespace WindowsFormsApp5
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + interval, rullerY + sizeOsnDel), new OpenCvSharp.Point(rullerX + interval, rullerY - sizeOsnDel), Scalar.Red, 1, LineTypes.AntiAlias);
                         Cv2.PutText(frameCopy, text, new OpenCvSharp.Point((rullerX + interval) - (textSize.Width / 2), rullerY - (sizeOsnDel + 5)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
-
                     else
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + interval, rullerY + 5), new OpenCvSharp.Point(rullerX + interval, rullerY - 5), Scalar.Red, 1, LineTypes.AntiAlias);
@@ -164,7 +191,6 @@ namespace WindowsFormsApp5
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + sizeOsnDel, rullerY + interval), new OpenCvSharp.Point(rullerX - sizeOsnDel, rullerY + interval), Scalar.Red, 1, LineTypes.AntiAlias);
                         Cv2.PutText(frameCopy, text, new OpenCvSharp.Point(rullerX + (sizeOsnDel + 5), (rullerY + interval) + (textSize.Height / 2)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
-
                     else
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + 5, rullerY + interval), new OpenCvSharp.Point(rullerX - 5, rullerY + interval), Scalar.Red, 1, LineTypes.AntiAlias);
@@ -180,7 +206,6 @@ namespace WindowsFormsApp5
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX - interval, rullerY + sizeOsnDel), new OpenCvSharp.Point(rullerX - interval, rullerY - sizeOsnDel), Scalar.Red, 1, LineTypes.AntiAlias);
                         Cv2.PutText(frameCopy, text, new OpenCvSharp.Point((rullerX - interval) - (textSize.Width / 2), rullerY + (sizeOsnDel + 5) + textSize.Height), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
-
                     else
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX - interval, rullerY + 5), new OpenCvSharp.Point(rullerX - interval, rullerY - 5), Scalar.Red, 1, LineTypes.AntiAlias);
@@ -196,16 +221,10 @@ namespace WindowsFormsApp5
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + sizeOsnDel, rullerY - interval), new OpenCvSharp.Point(rullerX - sizeOsnDel, rullerY - interval), Scalar.Red, 1, LineTypes.AntiAlias);
                         Cv2.PutText(frameCopy, text, new OpenCvSharp.Point(rullerX - (sizeOsnDel + 5) - textSize.Width, (rullerY - interval) + (textSize.Height / 2)), HersheyFonts.HersheyPlain, textScale, Scalar.Red, 1, LineTypes.AntiAlias);
                     }
-
                     else
                     {
                         Cv2.Line(frameCopy, new OpenCvSharp.Point(rullerX + 5, rullerY - interval), new OpenCvSharp.Point(rullerX - 5, rullerY - interval), Scalar.Red, 1, LineTypes.AntiAlias);
                     }
-                }
-
-                if (isCameraRunning == true)
-                {
-                    if (checkBox_blockDetected.Checked == true) blockDetected();
                 }
 
                 if (drawFlag == false) break;
@@ -214,11 +233,9 @@ namespace WindowsFormsApp5
                 drawFlag = false;
             }
 
-            if (isCameraRunning == false && checkBox_blockDetected.Checked == true) blockDetected();
-
             image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(frameCopy);
             var saveimg = pictureBox.Image;
-            pictureBox.Image = image;   //в данный момент объект используется другим процессом (при перемещении линейки на включенной камере)
+            pictureBox.Image = image;
             if (saveimg != null) saveimg.Dispose();
             frameCopy.Dispose();
         }
@@ -263,6 +280,7 @@ namespace WindowsFormsApp5
                 {
                     newZoom = tempZoom;
                 }
+
                 pictureBox.Width = (int)(frame.Width * newZoom);
                 pictureBox.Height = (int)(frame.Height * newZoom);
 
@@ -271,6 +289,7 @@ namespace WindowsFormsApp5
                     checkPos(pictureBox.Left - (int)((movePoint.X / mainZoom * newZoom - movePoint.X)), pictureBox.Top - (int)((movePoint.Y / mainZoom * newZoom - movePoint.Y)));
                 }
                 else checkPos(pictureBox.Left, pictureBox.Top);
+
                 mainZoom = newZoom;
             }
         }
@@ -342,6 +361,7 @@ namespace WindowsFormsApp5
             else
             {
                 if (pl > 0) pl = 0;
+
                 if ((pl + pictureBox.Width) < panelPB.Width) pl = panelPB.Width - pictureBox.Width;
             }
 
@@ -350,6 +370,7 @@ namespace WindowsFormsApp5
             else
             {
                 if (pt > 0) pt = 0;
+
                 if ((pt + pictureBox.Height) < panelPB.Height) pt = panelPB.Height - pictureBox.Height;
             }
 
@@ -399,8 +420,8 @@ namespace WindowsFormsApp5
                 label2.ForeColor = Color.Black;
                 label3.ForeColor = Color.Black;
                 label4.ForeColor = Color.Black;
+                checkBox_blockDetected.ForeColor = Color.Black;
             }
-
             else
             {
                 this.BackColor = Color.FromArgb(9, 10, 20);
@@ -409,6 +430,7 @@ namespace WindowsFormsApp5
                 label2.ForeColor = Color.LightGray;
                 label3.ForeColor = Color.LightGray;
                 label4.ForeColor = Color.LightGray;
+                checkBox_blockDetected.ForeColor = Color.LightGray;
             }
         }
 
@@ -422,6 +444,7 @@ namespace WindowsFormsApp5
                 savedialog.CheckPathExists = true;
                 savedialog.Filter = "Image Files(*.BMP)|*.BMP|Image Files(*.JPG)|*.JPG|Image Files(*.GIF)|*.GIF|Image Files(*.PNG)|*.PNG|All files (*.*)|*.*";
                 savedialog.FileName = "Безымянный";
+
                 if (savedialog.ShowDialog() == DialogResult.OK)
                 {
                     try
@@ -439,18 +462,17 @@ namespace WindowsFormsApp5
         private void comboBox_valueView_SelectedIndexChanged(object sender, EventArgs e)
         {
             valueView = comboBox_valueView.SelectedIndex;
-            //Threating();
+            Threating();
         }
 
         private void blockDetected()
         {
-            frameUpdated = frame.Clone(); //failed to allocate 921600 bytes
+            frameUpdated = frame.Clone();
             using (Mat gray = new Mat())
             using (Mat binary = new Mat())
             {
                 Cv2.CvtColor(frameUpdated, gray, ColorConversionCodes.BGR2GRAY); //перевод в серый
                 Cv2.AdaptiveThreshold(gray, binary, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 81, 10);    //бинаризация
-
 
                 OpenCvSharp.Point[][] contours; //поиск контуров
                 HierarchyIndex[] hierarchyIndexes;
@@ -476,15 +498,12 @@ namespace WindowsFormsApp5
 
         private void checkBox_blockDetected_CheckedChanged(object sender, EventArgs e)
         {
-            //if(isCameraRunning == false && checkBox_blockDetected.Checked == true) blockDetected();
-            //if(isCameraRunning == true && checkBox_blockDetected.Checked == true)
-            //{
-            //    while (true)
-            //    {
-            //        blockDetected();
-            //    }
-            //}
-            //else frameUpdated = frame.Clone();
+            if (checkBox_blockDetected.Checked) blockDetected();
+            else
+            {
+                frameUpdated = frame.Clone();
+                Threating();
+            }
         }
     }
 }
